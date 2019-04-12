@@ -92,16 +92,16 @@ evaluate investments in projects. This is a simple demonstration.
 
 -----
 
+1.  
 ![](README_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
 
-2.  达成利润目标10万元的概率0.3631，亏损风险0.4604。
+2.  达成利润目标 10 万元的概率 36.31 %，亏损风险 46.04 %。
 
-3.  。。。
-
+3.  
 ![](README_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
 
-4.  达成利润目标10万元的概率0.3408，亏损风险0.458。
+4.  达成利润目标 10 万元的概率 34.08 %，亏损风险 45.8 %。
 
-![](README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+5.  达成利润目标 10 万元的概率 31.57 %，亏损风险 52.87 %。
 
-5.  达成利润目标10万元的概率0.3157，亏损风险0.5287。
+![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->

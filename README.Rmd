@@ -93,6 +93,8 @@ Profit = Leads * Conversion Rate * Profit Margin per Sale - (Cost per Lead * Lea
 
 ****
 
+1. 
+
 ```{r}
 library(tidyverse)
 library(ggthemes)
@@ -125,13 +127,24 @@ dat <- cal_profit(10000)
 
 dat %>% 
     ggplot(aes(x = profit)) +
-    geom_density()
+    geom_density() +
+    geom_vline(xintercept = quantile(dat$profit, c(0.025, 0.975)), color = "darkred", lty = 2) +
+    annotate("text", label = round(quantile(dat$profit, c(0.025, 0.975))), 
+             x = quantile(dat$profit, c(0.025, 0.975)), 
+             y = 0, colour = "red")
 
 ```
 
-2. 达成利润目标10万元的概率`r mean(dat$profit > 100000)`，亏损风险`r mean(dat$profit < 0)`。
+2. 达成利润目标 10 万元的概率 `r prettyNum(mean(dat$profit > 100000) * 100)` %，亏损风险 `r prettyNum(mean(dat$profit < 0) * 100)` %。
 
-3. 。。。
+3. 
+
+```{r}
+ dat %>% 
+    ggplot(aes(x = profit)) +
+    geom_density() +
+    stat_ecdf()
+```
 
 ```{r}
 raw <- read_csv("Data/cpl_and_conversion.csv")
@@ -161,13 +174,13 @@ fit_profit <- function(n){
 
 fit_dat <- fit_profit(10000)
 
-fit_dat %>% 
-    ggplot(aes(x = profit)) +
-    geom_density()
+# fit_dat %>% 
+#     ggplot(aes(x = profit)) +
+#     geom_density()
 
 ```
 
-4. 达成利润目标10万元的概率`r mean(fit_dat$profit > 100000)`，亏损风险`r mean(fit_dat$profit < 0)`。
+4. 达成利润目标 10 万元的概率 `r prettyNum(mean(fit_dat$profit > 100000) * 100)` %，亏损风险 `r prettyNum(mean(fit_dat$profit < 0) * 100)` %。
 
 ```{r}
 set.seed(1212)
@@ -192,10 +205,14 @@ fix_profit <- function(n){
 }
 fix_dat <- fix_profit(10000)
 
-bind_cols(fit_dat, fix_dat) %>% 
-    ggplot() +
-    geom_density(aes(x = profit), fill = "lightgray", alpha = 0.3) +
-    geom_density(aes(x = profit1), fill = "lightblue", alpha = 0.3)
 ```
 
-5. 达成利润目标10万元的概率`r mean(fix_dat$profit > 100000)`，亏损风险`r mean(fix_dat$profit < 0)`。
+5. 达成利润目标 10 万元的概率 `r prettyNum(mean(fix_dat$profit > 100000) * 100)` %，亏损风险 `r prettyNum(mean(fix_dat$profit < 0) * 100)` %。
+
+```{r}
+bind_rows(fit_dat %>% mutate(type = "原始成本"), 
+          fix_dat %>% mutate(type = "增加成本")) %>% 
+    ggplot(aes(x = profit, fill = type, alpha = 0.1)) +
+    geom_density() +
+    guides(alpha = FALSE)
+```
