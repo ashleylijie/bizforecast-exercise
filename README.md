@@ -87,3 +87,21 @@ evaluate investments in projects. This is a simple demonstration.
 `geom_point` `geom_line` `stat_ecdf`
 
 请设置随机种子为 **1212**
+
+-----
+
+-----
+
+![](README_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
+
+2.  达成利润目标10万元的概率0.3631，亏损风险0.4604。
+
+3.  。。。
+
+![](README_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+
+4.  达成利润目标10万元的概率0.3408，亏损风险0.458。
+
+![](README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
+5.  达成利润目标10万元的概率0.3157，亏损风险0.5287。

@@ -4,7 +4,7 @@ output: github_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE, message=FALSE, warning = FALSE)
 ```
 
 
@@ -89,3 +89,113 @@ Profit = Leads * Conversion Rate * Profit Margin per Sale - (Cost per Lead * Lea
 
 请设置随机种子为 **1212**
 
+****
+
+****
+
+```{r}
+library(tidyverse)
+library(ggthemes)
+
+old <- theme_tufte() + theme(text = element_text(family = "Noto Sans CJK SC", size = 9))
+theme_set(old)
+
+
+set.seed(1212)
+cal_profit <- function(n){
+    
+    profit_margin <- runif(n, min = 350, max = 400)
+    leads_n <- runif(n, min = 3000, max = 4000)
+    conversion_rate <- rnorm(n, mean = 0.04, sd = 0.005)
+    
+    revenue <- profit_margin * leads_n * conversion_rate * 30.4
+    
+    fixed_overheads <- 20000
+    cost_per_lead <- runif(n, min = 8, max = 10)
+    leads_cost <- leads_n * cost_per_lead
+    
+    expenses <- (fixed_overheads + leads_cost) * 30.4
+    
+    res <- data.frame(revenue,
+                      expenses,
+                      profit = revenue - expenses)
+}
+
+dat <- cal_profit(10000)
+
+dat %>% 
+    ggplot(aes(x = profit)) +
+    geom_density()
+
+```
+
+2. 达成利润目标10万元的概率`r mean(dat$profit > 100000)`，亏损风险`r mean(dat$profit < 0)`。
+
+3. 。。。
+
+```{r}
+raw <- read_csv("Data/cpl_and_conversion.csv")
+set.seed(1212)
+lm.fit <- lm(cost_per_lead ~ conversion_rate, raw)
+
+fit_profit <- function(n){
+   
+    profit_margin <- runif(n, min = 350, max = 400)
+    leads_n <- runif(n, min = 3000, max = 4000)
+    conversion_rate <- rnorm(n, mean = 0.04, sd = 0.005)
+    
+    revenue <- profit_margin * leads_n * conversion_rate * 30.4
+    
+    fixed_overheads <- 20000
+    cost_per_lead <- predict(lm.fit, data.frame(conversion_rate))
+    leads_cost <- leads_n * cost_per_lead
+    
+    expenses <- (fixed_overheads + leads_cost) * 30.4
+    
+    res <- data.frame(revenue,
+                      expenses,
+                      profit = revenue - expenses)
+    
+}
+
+
+fit_dat <- fit_profit(10000)
+
+fit_dat %>% 
+    ggplot(aes(x = profit)) +
+    geom_density()
+
+```
+
+4. 达成利润目标10万元的概率`r mean(fit_dat$profit > 100000)`，亏损风险`r mean(fit_dat$profit < 0)`。
+
+```{r}
+set.seed(1212)
+fix_profit <- function(n){
+    
+    profit_margin <- runif(n, min = 350, max = 400)
+    leads_n <- runif(n, min = 3000, max = 4000) * runif(n, min = 1.15, max = 1.25)
+    conversion_rate <- rnorm(n, mean = 0.04, sd = 0.005)
+    
+    revenue <- profit_margin * leads_n * conversion_rate * 30.4
+    
+    fixed_overheads <- 20000 * runif(n, min = 1.25, max = 1.3)
+    cost_per_lead <- predict(lm.fit, data.frame(conversion_rate))
+    leads_cost <- leads_n * cost_per_lead
+    
+    expenses <- (fixed_overheads + leads_cost) * 30.4
+    
+    res <- data.frame(revenue,
+                      expenses,
+                      profit = revenue - expenses)
+    
+}
+fix_dat <- fix_profit(10000)
+
+bind_cols(fit_dat, fix_dat) %>% 
+    ggplot() +
+    geom_density(aes(x = profit), fill = "lightgray", alpha = 0.3) +
+    geom_density(aes(x = profit1), fill = "lightblue", alpha = 0.3)
+```
+
+5. 达成利润目标10万元的概率`r mean(fix_dat$profit > 100000)`，亏损风险`r mean(fix_dat$profit < 0)`。
